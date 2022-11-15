@@ -9367,6 +9367,14 @@ shinyServer(function(input, output, session) {
   # observeEvent(input$interpretToggle, {
   #   pushbar_open(id = "myPushbar")
   # })
+
+  # Never time-out
+  # Stop the app timing out
+  autoInvalidate <- reactiveTimer(10000)
+  observe({
+    autoInvalidate()
+    cat(".")
+  })
   
 })
 
