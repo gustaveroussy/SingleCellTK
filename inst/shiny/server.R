@@ -368,7 +368,12 @@ shinyServer(function(input, output, session) {
   if (sysname == "Windows") {
     roots <- getVolumes()()
   } else {
-    roots <- c(home = "~/", working_dir = getwd(), dea = "~/Documents/Devs/EBAII/2022/ebaiin1/SingleCell/DEA/")
+    roots <- c(
+      home = "~/", 
+      working_dir = getwd(), 
+      shared_projects = "/shared/projects",
+      Cours_SingleCell = "/shared/projects/form_2022_32/SingleCellRNASeq",
+    )
   }
   dirPaths <- reactiveValues(
     bDirectory = ".",
