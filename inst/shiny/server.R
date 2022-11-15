@@ -390,6 +390,7 @@ shinyServer(function(input, output, session) {
   shinyDirChoose(input, "sDirectory", roots = roots)
   shinyDirChoose(input, 'directory', roots = roots)
   shinyFileChoose(input, "rdsFile", roots = roots)
+  shinyFileChoose(input, "geneSetGMT", roots = roots)
 
   output$bDirectoryPath <- renderText({
     dirPaths$bDirectory
@@ -881,25 +882,15 @@ shinyServer(function(input, output, session) {
   # Event handler to import an RDS input
   observeEvent(input$addRDSImport, {
     id <- paste0("newSampleRDS", allImportEntries$id_count)
-    print("INPUT FILES")
-    print(input$rdsFile$files)
-    rdsFilesList <- lapply(input$rdsFile$files, function(x) {
-      paste(c(".", unlist(x)), collapse="/")
-    })
-    print("OLD RDS FILE LIST")
-    print(rdsFilesList)
+    # rdsFilesList <- lapply(input$rdsFile$files, function(x) {
+    #   paste(c(".", unlist(x)), collapse="/")
+    # })
     rdsFilesList <- parseFilePaths(roots=roots, selection=input$rdsFile)
-    print("RDS FILE LIST")
-    print(rdsFilesList)
     entry <- list(type="rds", id=id, params=list(rdsFile=rdsFilesList$datapath))
-    print("ENTRY")
-    print(entry)
     # entry <- paste(c(".", unlist(input$rdsFile$files)), collapse="/")
     # entry <- list(type="rds", id = id, params=list(rdsFile=input$rdsFile$datapath))
     allImportEntries$samples <- c(allImportEntries$samples, list(entry))
     allImportEntries$id_count <- allImportEntries$id_count+1
-    print('ALL IMPORT ENTRIES')
-    print(allImportEntries)
 
     addToGeneralSampleTable("rds", id, input$rdsFile$datapath, "")
 
@@ -1432,17 +1423,19 @@ shinyServer(function(input, output, session) {
         byParam <- input$gsByParam
       }
       if (input$geneSetSourceChoice == "gsGMTUpload") {
-        if (is.null(input$geneSetGMT)) {
+        gmt_file <- parseFilePaths(roots=roots, selection=input$geneSetGMT)
+        if (is.null(gmt_file)) {
           shinyjs::show(id = "gsUploadError", anim = FALSE)
         } else if (!nzchar(input$gsCollectionNameGMT)){
           shinyjs::show(id = "gsUploadError", anim = FALSE)
         } else {
           shinyjs::hide(id = "gsUploadError", anim = FALSE)
+
           vals$counts <- importGeneSetsFromGMT(vals$counts,
-                                                 input$geneSetGMT$datapath,
+                                                 gmt_file$datapath,
                                                  by = byParam,
                                                  collectionName = input$gsCollectionNameGMT)
-          addToGSTable(input$gsCollectionNameGMT, input$geneSetGMT$datapath)
+          addToGSTable(input$gsCollectionNameGMT, gmt_file$datapath)
         }
 
       } else if (input$geneSetSourceChoice == "gsDBUpload") {
@@ -9373,7 +9366,7 @@ shinyServer(function(input, output, session) {
   autoInvalidate <- reactiveTimer(10000)
   observe({
     autoInvalidate()
-    cat(".")
+    cat(date(), "\n")
   })
   
 })

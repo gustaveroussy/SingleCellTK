@@ -31,7 +31,14 @@ shinyPanelGeneSets <- fluidPage(
     conditionalPanel(
       condition = sprintf("input['%s'] == 'gsGMTUpload'", "geneSetSourceChoice"),
       h3("Upload a GMT file:"),
-      fileInput('geneSetGMT', 'Choose GMT File', accept = ".gmt"),
+      # fileInput('geneSetGMT', 'Choose GMT File', accept = ".gmt"),
+      shinyFiles::shinyFilesButton(
+        id="geneSetGMT", 
+        title="Choose GMT File:", 
+        multiple=TRUE, 
+        label="Select GMT file on IFB Jupyter", 
+        fileType = list(RDS=c(".gmt"))
+      ),
       textInput('gsCollectionNameGMT', label='Collection Name'),
     ),
 
