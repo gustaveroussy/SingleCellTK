@@ -372,7 +372,7 @@ shinyServer(function(input, output, session) {
       home = "~/", 
       working_dir = getwd(), 
       shared_projects = "/shared/projects",
-      Cours_SingleCell = "/shared/projects/form_2022_32/SingleCellRNASeq",
+      Cours_SingleCell = "/shared/projects/form_2022_32/SingleCellRNASeq"
     )
   }
   dirPaths <- reactiveValues(
